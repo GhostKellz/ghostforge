@@ -14,17 +14,15 @@ pub fn run() {
         Err(_) => return,
     };
     let mut found = false;
-    for entry in entries {
-        if let Ok(entry) = entry {
-            let fname = entry.file_name();
-            if fname.to_string_lossy().ends_with(".pkg.tar.zst") {
-                let dest = Path::new(repo_dir).join(&fname);
-                match fs::copy(entry.path(), &dest) {
-                    Ok(_) => println!("Published {} to repo/", fname.to_string_lossy()),
-                    Err(e) => println!("Failed to publish {}: {}", fname.to_string_lossy(), e),
-                }
-                found = true;
+    for entry in entries.flatten() {
+        let fname = entry.file_name();
+        if fname.to_string_lossy().ends_with(".pkg.tar.zst") {
+            let dest = Path::new(repo_dir).join(&fname);
+            match fs::copy(entry.path(), &dest) {
+                Ok(_) => println!("Published {} to repo/", fname.to_string_lossy()),
+                Err(e) => println!("Failed to publish {}: {}", fname.to_string_lossy(), e),
             }
+            found = true;
         }
     }
     if !found {

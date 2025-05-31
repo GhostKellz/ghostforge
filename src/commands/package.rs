@@ -12,14 +12,14 @@ pub fn create_package(build_dir: &str, output_path: &str) -> std::io::Result<()>
         .arg(".")
         .status()?;
     if !status.success() {
-        return Err(std::io::Error::new(std::io::ErrorKind::Other, "tar failed"));
+        return Err(std::io::Error::other("tar failed"));
     }
     let status = Command::new("zstd")
         .arg("-f")
         .arg(&tar_path)
         .status()?;
     if !status.success() {
-        return Err(std::io::Error::new(std::io::ErrorKind::Other, "zstd failed"));
+        return Err(std::io::Error::other("zstd failed"));
     }
     fs::remove_file(&tar_path)?;
     Ok(())

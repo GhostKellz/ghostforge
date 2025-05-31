@@ -9,22 +9,20 @@ pub fn run() {
             Err(_) => return,
         };
         let mut found = false;
-        for entry in entries {
-            if let Ok(entry) = entry {
-                let fname = entry.file_name();
-                if fname.to_string_lossy().ends_with(".pkg.tar.zst") {
-                    println!("Uploading {} to {}", fname.to_string_lossy(), remote);
-                    let status = Command::new("scp")
-                        .arg(entry.path())
-                        .arg(&remote)
-                        .status();
-                    match status {
-                        Ok(s) if s.success() => println!("Upload succeeded."),
-                        Ok(s) => println!("Upload failed with status: {}", s),
-                        Err(e) => println!("Failed to run scp: {}", e),
-                    }
-                    found = true;
+        for entry in entries.flatten() {
+            let fname = entry.file_name();
+            if fname.to_string_lossy().ends_with(".pkg.tar.zst") {
+                println!("Uploading {} to {}", fname.to_string_lossy(), remote);
+                let status = Command::new("scp")
+                    .arg(entry.path())
+                    .arg(&remote)
+                    .status();
+                match status {
+                    Ok(s) if s.success() => println!("Upload succeeded."),
+                    Ok(s) => println!("Upload failed with status: {}", s),
+                    Err(e) => println!("Failed to run scp: {}", e),
                 }
+                found = true;
             }
         }
         if !found {

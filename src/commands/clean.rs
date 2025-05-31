@@ -8,13 +8,10 @@ pub fn run() {
     for p in &paths {
         if p.contains("*") {
             // Glob pattern
-            match glob::glob(p) {
-                Ok(paths) => {
-                    for entry in paths.flatten() {
-                        let _ = fs::remove_file(&entry);
-                    }
+            if let Ok(paths) = glob::glob(p) {
+                for entry in paths.flatten() {
+                    let _ = fs::remove_file(&entry);
                 }
-                Err(_) => {}
             }
         } else if Path::new(p).exists() {
             let _ = fs::remove_dir_all(p);
