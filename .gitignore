@@ -1,0 +1,27 @@
+# === Rust & Cargo ===
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# === Editors / IDEs ===
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Logs & temp ===
+*.log
+*.tmp
+
+# === CI / tooling (optional) ===
+/coverage/
+.cargo/
+
+# === Forge-specific ===
+ghostpkg.lock
+pkgbuild.out/
+
