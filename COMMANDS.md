@@ -8,8 +8,8 @@
 
 | Command         | Description                                                   |
 | --------------- | ------------------------------------------------------------- |
-| `forge build`   | Build the current package using `PKGBUILD` or `ghostpkg.toml` |
-| `forge install` | Install the built package into the system                     |
+| `forge build`   | Build the current package using `PKGBUILD` or `ghostpkg.toml` (parallel build supported) |
+| `forge install` | Install the built package into the system (enforces signature verification) |
 | `forge clean`   | Remove temporary build artifacts and cache                    |
 | `forge info`    | Display metadata and parsed manifest info                     |
 
@@ -20,7 +20,7 @@
 | Command        | Description                                                 |
 | -------------- | ----------------------------------------------------------- |
 | `forge init`   | Generate a starter `ghostpkg.toml` file                     |
-| `forge lint`   | Validate the syntax and structure of a manifest or PKGBUILD |
+| `forge lint`   | Validate the syntax and structure of a manifest or PKGBUILD (array support) |
 | `forge sign`   | Sign the built package using GPG                            |
 | `forge verify` | Verify signatures and checksums of a package                |
 

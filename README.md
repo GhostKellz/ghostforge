@@ -20,6 +20,11 @@
 * 🔐 Optional signing and hash verification
 * 🧱 Pluggable build backends (e.g., `cargo`, `cmake`, `just`)
 * 📤 Integration-ready with `pacman`, custom repos, or CI pipelines
+* Now supports full PKGBUILD array parsing (depends, makedepends, optdepends)
+* Parallel build support for subdirectories
+* Enforces signature verification before install
+* Colorized output and improved error messages
+* See DOCS.md for advanced usage, hooks, and plugin system
 
 ---
 
@@ -84,6 +89,7 @@ checksum = "sha256:abcd1234..."
 * Full CLI Reference: [`ghostforge --help`](https://github.com/ghostkellz/ghostforge/wiki/CLI-Reference)
 * [ghostpkg.toml Specification](https://github.com/ghostkellz/ghostforge/wiki/ghostpkg.toml-Spec)
 * Migration Guide from `makepkg`: [Read Here](https://github.com/ghostkellz/ghostforge/wiki/Migrating-from-Makepkg)
+* See [`DOCS.md`](DOCS.md) for advanced usage, hooks, and plugin system.
 
 ---
 

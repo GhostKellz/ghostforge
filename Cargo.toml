@@ -9,3 +9,9 @@ repository = "https://github.com/ghostkellz/ghostforge"
 
 [dependencies]
 clap = { version = "4.5.0", features = ["derive"] }
+rayon = "1.8"
+colored = "2.0"
+regex = "1.10"
+toml = "0.8"
+notify = "6.1"
+glob = "0.3"
