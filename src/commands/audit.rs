@@ -5,7 +5,9 @@ pub fn run() {
         Some(manifest) => {
             if let Some(data) = &manifest.data {
                 if let Some(license) = &data.license {
-                    if license.to_lowercase().contains("gpl") || license.to_lowercase().contains("mit") {
+                    if license.to_lowercase().contains("gpl")
+                        || license.to_lowercase().contains("mit")
+                    {
                         println!("License is open source: {}", license);
                     } else {
                         println!("License may not be open source: {}", license);

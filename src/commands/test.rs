@@ -18,7 +18,9 @@ pub fn run() {
                         Err(e) => println!("Failed to run test command: {}", e),
                     }
                 } else {
-                    println!("No test command found in manifest. (Convention: build = 'cargo test', etc.)");
+                    println!(
+                        "No test command found in manifest. (Convention: build = 'cargo test', etc.)"
+                    );
                 }
             } else {
                 println!("No manifest data available (PKGBUILD test not implemented).");

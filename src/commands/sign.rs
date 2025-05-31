@@ -1,10 +1,11 @@
-use std::process::Command;
 use std::fs;
+use std::process::Command;
 
 pub fn run() {
     // Find the first .pkg.tar.zst file in the current directory
     let pkg = match fs::read_dir(".") {
-        Ok(entries) => entries.filter_map(|e| e.ok())
+        Ok(entries) => entries
+            .filter_map(|e| e.ok())
             .find(|e| e.file_name().to_string_lossy().ends_with(".pkg.tar.zst")),
         Err(_) => None,
     };

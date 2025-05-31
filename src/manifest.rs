@@ -61,12 +61,24 @@ impl Manifest {
         Some(ManifestData {
             name: value.get("name")?.as_str()?.to_string(),
             version: value.get("version")?.as_str()?.to_string(),
-            author: value.get("author").and_then(|v| v.as_str().map(|s| s.to_string())),
-            license: value.get("license").and_then(|v| v.as_str().map(|s| s.to_string())),
-            build: value.get("build").and_then(|v| v.as_str().map(|s| s.to_string())),
-            install: value.get("install").and_then(|v| v.as_str().map(|s| s.to_string())),
-            source: value.get("source").and_then(|v| v.as_str().map(|s| s.to_string())),
-            checksum: value.get("checksum").and_then(|v| v.as_str().map(|s| s.to_string())),
+            author: value
+                .get("author")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            license: value
+                .get("license")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            build: value
+                .get("build")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            install: value
+                .get("install")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            source: value
+                .get("source")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            checksum: value
+                .get("checksum")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
             depends: None,
             makedepends: None,
             optdepends: None,
@@ -78,8 +90,16 @@ impl Manifest {
         let name = regex_extract(&content, r#"pkgname=(['"]?)([^'"\s]+)\1"#)?;
         let version = regex_extract(&content, r#"pkgver=(['"]?)([^'"\s]+)\1"#)?;
         let license = regex_extract(&content, r#"license=(['"]?)([^'"\s]+)\1"#);
-        let build = if content.contains("build()") { Some("build".to_string()) } else { None };
-        let install = if content.contains("package()") { Some("package".to_string()) } else { None };
+        let build = if content.contains("build()") {
+            Some("build".to_string())
+        } else {
+            None
+        };
+        let install = if content.contains("package()") {
+            Some("package".to_string())
+        } else {
+            None
+        };
         let depends = extract_array(&content, "depends");
         let makedepends = extract_array(&content, "makedepends");
         let optdepends = extract_array(&content, "optdepends");
@@ -101,7 +121,8 @@ impl Manifest {
 
 fn regex_extract(content: &str, pat: &str) -> Option<String> {
     let re = regex::Regex::new(pat).ok()?;
-    re.captures(content).and_then(|cap| cap.get(2).map(|m| m.as_str().to_string()))
+    re.captures(content)
+        .and_then(|cap| cap.get(2).map(|m| m.as_str().to_string()))
 }
 
 fn extract_array(content: &str, var: &str) -> Option<Vec<String>> {
@@ -110,6 +131,9 @@ fn extract_array(content: &str, var: &str) -> Option<Vec<String>> {
     let arr = caps.get(1)?.as_str();
     let vals: Vec<String> = arr
         .split_whitespace()
-        .map(|s| s.trim_matches(|c| c == '"' || c == '\'')).filter(|s| !s.is_empty()).map(|s| s.to_string()).collect();
+        .map(|s| s.trim_matches(|c| c == '"' || c == '\''))
+        .filter(|s| !s.is_empty())
+        .map(|s| s.to_string())
+        .collect();
     if vals.is_empty() { None } else { Some(vals) }
 }

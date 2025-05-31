@@ -1,13 +1,16 @@
-use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
-use std::sync::mpsc::channel;
-use std::process::Command;
+use notify::{Config, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
+use std::process::Command;
+use std::sync::mpsc::channel;
 
 pub fn run() {
     println!("Watching for file changes. Press Ctrl+C to stop.");
     let (tx, rx) = channel();
-    let mut watcher = RecommendedWatcher::new(tx, Config::default()).expect("Failed to create watcher");
-    watcher.watch(Path::new("."), RecursiveMode::Recursive).expect("Failed to watch .");
+    let mut watcher =
+        RecommendedWatcher::new(tx, Config::default()).expect("Failed to create watcher");
+    watcher
+        .watch(Path::new("."), RecursiveMode::Recursive)
+        .expect("Failed to watch .");
     loop {
         match rx.recv() {
             Ok(Ok(_event)) => {

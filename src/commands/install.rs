@@ -1,12 +1,13 @@
-use crate::manifest::Manifest;
-use std::process::Command;
-use std::fs;
 use crate::commands::ui;
+use crate::manifest::Manifest;
+use std::fs;
+use std::process::Command;
 
 pub fn run() {
     // Enforce hash/signature verification before install
     let pkg = match fs::read_dir(".") {
-        Ok(entries) => entries.filter_map(|e| e.ok())
+        Ok(entries) => entries
+            .filter_map(|e| e.ok())
             .find(|e| e.file_name().to_string_lossy().ends_with(".pkg.tar.zst")),
         Err(_) => None,
     };
@@ -28,7 +29,11 @@ pub fn run() {
 
     match Manifest::detect() {
         Some(manifest) => {
-            ui::print_info(&format!("Detected manifest: {} (at {})", manifest.describe(), manifest.path));
+            ui::print_info(&format!(
+                "Detected manifest: {} (at {})",
+                manifest.describe(),
+                manifest.path
+            ));
             match manifest.manifest_type {
                 crate::manifest::ManifestType::GhostpkgToml => {
                     if let Some(data) = &manifest.data {
@@ -41,8 +46,13 @@ pub fn run() {
                             };
                             match status {
                                 Ok(s) if s.success() => ui::print_success("Install succeeded."),
-                                Ok(s) => ui::print_error(&format!("Install failed with status: {}", s)),
-                                Err(e) => ui::print_error(&format!("Failed to run install command: {}", e)),
+                                Ok(s) => {
+                                    ui::print_error(&format!("Install failed with status: {}", s))
+                                }
+                                Err(e) => ui::print_error(&format!(
+                                    "Failed to run install command: {}",
+                                    e
+                                )),
                             }
                         } else {
                             ui::print_error("No install command found in manifest.");
@@ -57,8 +67,13 @@ pub fn run() {
                         .status();
                     match status {
                         Ok(s) if s.success() => ui::print_success("PKGBUILD package() succeeded."),
-                        Ok(s) => ui::print_error(&format!("PKGBUILD package() failed with status: {}", s)),
-                        Err(e) => ui::print_error(&format!("Failed to run PKGBUILD package(): {}", e)),
+                        Ok(s) => ui::print_error(&format!(
+                            "PKGBUILD package() failed with status: {}",
+                            s
+                        )),
+                        Err(e) => {
+                            ui::print_error(&format!("Failed to run PKGBUILD package(): {}", e))
+                        }
                     }
                 }
             }

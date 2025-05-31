@@ -1,10 +1,17 @@
+use crate::commands::ui;
 use std::fs;
 use std::path::Path;
-use crate::commands::ui;
 
 pub fn run() {
     // Remove common build artifacts and temp directories
-    let paths = ["target", "build", "pkg", "*.tar.zst", "*.tar", "*.pkg.tar.zst"];
+    let paths = [
+        "target",
+        "build",
+        "pkg",
+        "*.tar.zst",
+        "*.tar",
+        "*.pkg.tar.zst",
+    ];
     for p in &paths {
         if p.contains("*") {
             // Glob pattern

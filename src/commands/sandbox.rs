@@ -1,20 +1,31 @@
-use std::process::Command;
 use std::env;
+use std::process::Command;
 
 pub fn run() {
     // Run build in a temporary directory using bubblewrap if available
     let build_dir = env::current_dir().unwrap();
-    let bwrap = Command::new("which").arg("bwrap").output().ok().map(|o| o.status.success()).unwrap_or(false);
+    let bwrap = Command::new("which")
+        .arg("bwrap")
+        .output()
+        .ok()
+        .map(|o| o.status.success())
+        .unwrap_or(false);
     if bwrap {
         println!("Running build in sandbox using bubblewrap...");
         let status = Command::new("bwrap")
-            .arg("--ro-bind").arg(&build_dir).arg("/src")
-            .arg("--dev").arg("/dev")
-            .arg("--proc").arg("/proc")
+            .arg("--ro-bind")
+            .arg(&build_dir)
+            .arg("/src")
+            .arg("--dev")
+            .arg("/dev")
+            .arg("--proc")
+            .arg("/proc")
             .arg("--unshare-all")
             .arg("--die-with-parent")
-            .arg("--chdir").arg("/src")
-            .arg("forge").arg("build")
+            .arg("--chdir")
+            .arg("/src")
+            .arg("forge")
+            .arg("build")
             .status();
         match status {
             Ok(s) if s.success() => println!("Sandboxed build succeeded."),

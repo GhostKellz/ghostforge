@@ -16,6 +16,8 @@ pub fn run() {
             Err(e) => println!("Failed to run rsync: {}", e),
         }
     } else {
-        println!("No FORGE_SYNC_REMOTE set. To sync, set FORGE_SYNC_REMOTE=dest e.g. user@host:/path");
+        println!(
+            "No FORGE_SYNC_REMOTE set. To sync, set FORGE_SYNC_REMOTE=dest e.g. user@host:/path"
+        );
     }
 }

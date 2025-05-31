@@ -1,5 +1,5 @@
-use std::process::Command;
 use std::fs;
+use std::process::Command;
 
 pub fn run() {
     let remote = std::env::var("FORGE_UPLOAD_REMOTE").ok();
@@ -13,10 +13,7 @@ pub fn run() {
             let fname = entry.file_name();
             if fname.to_string_lossy().ends_with(".pkg.tar.zst") {
                 println!("Uploading {} to {}", fname.to_string_lossy(), remote);
-                let status = Command::new("scp")
-                    .arg(entry.path())
-                    .arg(&remote)
-                    .status();
+                let status = Command::new("scp").arg(entry.path()).arg(&remote).status();
                 match status {
                     Ok(s) if s.success() => println!("Upload succeeded."),
                     Ok(s) => println!("Upload failed with status: {}", s),

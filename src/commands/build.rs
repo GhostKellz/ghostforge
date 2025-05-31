@@ -1,7 +1,7 @@
-use std::process::Command;
-use std::fs;
-use rayon::prelude::*;
 use crate::commands::ui;
+use rayon::prelude::*;
+use std::fs;
+use std::process::Command;
 
 pub fn run() {
     // Example: parallel build for multiple PKGBUILDs/ghostpkg.toml in subdirs
@@ -22,7 +22,9 @@ pub fn run() {
                 .arg("build")
                 .status();
             match status {
-                Ok(s) if s.success() => ui::print_success(&format!("Build succeeded in {:?}", path)),
+                Ok(s) if s.success() => {
+                    ui::print_success(&format!("Build succeeded in {:?}", path))
+                }
                 Ok(s) => ui::print_error(&format!("Build failed in {:?} with status: {}", path, s)),
                 Err(e) => ui::print_error(&format!("Failed to run build in {:?}: {}", path, e)),
             }
@@ -32,7 +34,11 @@ pub fn run() {
 
     match crate::manifest::Manifest::detect() {
         Some(manifest) => {
-            ui::print_info(&format!("Detected manifest: {} (at {})", manifest.describe(), manifest.path));
+            ui::print_info(&format!(
+                "Detected manifest: {} (at {})",
+                manifest.describe(),
+                manifest.path
+            ));
             match manifest.manifest_type {
                 crate::manifest::ManifestType::GhostpkgToml => {
                     if let Some(data) = &manifest.data {
@@ -45,8 +51,12 @@ pub fn run() {
                             };
                             match status {
                                 Ok(s) if s.success() => ui::print_success("Build succeeded."),
-                                Ok(s) => ui::print_error(&format!("Build failed with status: {}", s)),
-                                Err(e) => ui::print_error(&format!("Failed to run build command: {}", e)),
+                                Ok(s) => {
+                                    ui::print_error(&format!("Build failed with status: {}", s))
+                                }
+                                Err(e) => {
+                                    ui::print_error(&format!("Failed to run build command: {}", e))
+                                }
                             }
                         } else {
                             ui::print_error("No build command found in manifest.");
@@ -61,8 +71,12 @@ pub fn run() {
                         .status();
                     match status {
                         Ok(s) if s.success() => ui::print_success("PKGBUILD build() succeeded."),
-                        Ok(s) => ui::print_error(&format!("PKGBUILD build() failed with status: {}", s)),
-                        Err(e) => ui::print_error(&format!("Failed to run PKGBUILD build(): {}", e)),
+                        Ok(s) => {
+                            ui::print_error(&format!("PKGBUILD build() failed with status: {}", s))
+                        }
+                        Err(e) => {
+                            ui::print_error(&format!("Failed to run PKGBUILD build(): {}", e))
+                        }
                     }
                 }
             }

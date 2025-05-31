@@ -1,5 +1,5 @@
-use crate::manifest::Manifest;
 use crate::commands::ui;
+use crate::manifest::Manifest;
 
 pub fn run() {
     match Manifest::detect() {

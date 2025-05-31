@@ -103,15 +103,3 @@ We welcome pull requests, issues, and feature suggestions. See [`CONTRIBUTING.md
 
 MIT License © 2025 CK Technology LLC — See [`LICENSE`](LICENSE) for details.
 
----
-
-## 👻 Project Status
-
-GhostForge is under active development. It is stable for basic use and growing toward full Arch ecosystem integration.
-
-* [x] PKGBUILD parsing
-* [x] ghostpkg.toml support
-* [x] Build & install
-* [ ] Signed package support
-* [ ] `pacman` repo sync
-* [ ] AUR helper integration

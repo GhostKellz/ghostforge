@@ -1,5 +1,5 @@
-use std::process::Command;
 use std::fs;
+use std::process::Command;
 
 pub fn create_package(build_dir: &str, output_path: &str) -> std::io::Result<()> {
     // Use tar and zstd to create a .pkg.tar.zst
@@ -14,10 +14,7 @@ pub fn create_package(build_dir: &str, output_path: &str) -> std::io::Result<()>
     if !status.success() {
         return Err(std::io::Error::other("tar failed"));
     }
-    let status = Command::new("zstd")
-        .arg("-f")
-        .arg(&tar_path)
-        .status()?;
+    let status = Command::new("zstd").arg("-f").arg(&tar_path).status()?;
     if !status.success() {
         return Err(std::io::Error::other("zstd failed"));
     }

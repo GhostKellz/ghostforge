@@ -57,4 +57,3 @@ fn main() {
         Commands::Watch => commands::watch::run(),
     }
 }
-

@@ -1,10 +1,11 @@
-use std::process::Command;
 use std::fs;
+use std::process::Command;
 
 pub fn run() {
     // Find the first .pkg.tar.zst file in the current directory
     let pkg = match fs::read_dir(".") {
-        Ok(entries) => entries.filter_map(|e| e.ok())
+        Ok(entries) => entries
+            .filter_map(|e| e.ok())
             .find(|e| e.file_name().to_string_lossy().ends_with(".pkg.tar.zst")),
         Err(_) => None,
     };
@@ -26,10 +27,7 @@ pub fn run() {
         let sha_path = format!("{}.sha256", pkg_path.to_string_lossy());
         if fs::metadata(&sha_path).is_ok() {
             println!("Verifying checksum: {}", sha_path);
-            let status = Command::new("sha256sum")
-                .arg("-c")
-                .arg(&sha_path)
-                .status();
+            let status = Command::new("sha256sum").arg("-c").arg(&sha_path).status();
             match status {
                 Ok(s) if s.success() => println!("Checksum is valid."),
                 Ok(s) => println!("Checksum verification failed with status: {}", s),

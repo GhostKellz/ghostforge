@@ -17,7 +17,11 @@ pub fn run() {
     }
     let a = &pkgs[pkgs.len() - 2];
     let b = &pkgs[pkgs.len() - 1];
-    println!("Diffing {} and {}", a.file_name().to_string_lossy(), b.file_name().to_string_lossy());
+    println!(
+        "Diffing {} and {}",
+        a.file_name().to_string_lossy(),
+        b.file_name().to_string_lossy()
+    );
     let status = std::process::Command::new("diffoscope")
         .arg(a.path())
         .arg(b.path())
