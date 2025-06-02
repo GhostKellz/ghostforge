@@ -2,7 +2,6 @@ use std::env;
 use std::process::Command;
 
 pub fn run() {
-    // Run build in a temporary directory using bubblewrap if available
     let build_dir = env::current_dir().unwrap();
     let bwrap = Command::new("which")
         .arg("bwrap")
@@ -10,6 +9,7 @@ pub fn run() {
         .ok()
         .map(|o| o.status.success())
         .unwrap_or(false);
+
     if bwrap {
         println!("Running build in sandbox using bubblewrap...");
         let status = Command::new("bwrap")
@@ -37,6 +37,25 @@ pub fn run() {
         let status = Command::new("forge").arg("build").status();
         match status {
             Ok(s) if s.success() => println!("Build succeeded."),
+            Ok(s) => println!("Build failed with status: {}", s),
+            Err(e) => println!("Failed to run build: {}", e),
+        }
+    }
+
+    // Compatibility with makepkg flags
+    let args: Vec<String> = env::args().collect();
+    if args.contains(&"-si".to_string()) {
+        println!("Running build and install (makepkg -si compatibility)...");
+        let build_status = Command::new("forge").arg("build").status();
+        match build_status {
+            Ok(s) if s.success() => {
+                let install_status = Command::new("forge").arg("install").status();
+                match install_status {
+                    Ok(s) if s.success() => println!("Build and install succeeded."),
+                    Ok(s) => println!("Install failed with status: {}", s),
+                    Err(e) => println!("Failed to run install: {}", e),
+                }
+            }
             Ok(s) => println!("Build failed with status: {}", s),
             Err(e) => println!("Failed to run build: {}", e),
         }
