@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
 #[command(name = "forge")]
+#[command(version = "0.1.0")]
 #[command(about = "GhostForge — a makepkg replacement", long_about = None)]
 struct Cli {
     #[command(subcommand)]
