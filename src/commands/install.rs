@@ -125,7 +125,7 @@ pub fn run() {
                         })
                         .unwrap_or_else(|| "main".to_string());
                     let bin_path = format!("target/release/{}", bin_name);
-                    if !fs::metadata(&bin_path).is_ok() {
+                    if fs::metadata(&bin_path).is_err() {
                         ui::print_error(&format!(
                             "Binary {} not found. Run 'forge build' first.",
                             bin_path
