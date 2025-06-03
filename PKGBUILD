@@ -1,4 +1,4 @@
-# Maintainer: Your Name <youremail@example.com>
+# Maintainer: Christopher Kelley <ckelley@ghostkellz.sh>
 
 pkgname=ghostforge
 pkgver=0.2.0
