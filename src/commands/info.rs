@@ -4,7 +4,10 @@ use std::env;
 
 pub fn run() {
     let args: Vec<String> = env::args().collect();
-    let manifest_path = args.iter().skip(2).find(|a| a.ends_with(".toml") || a.ends_with("PKGBUILD"));
+    let manifest_path = args
+        .iter()
+        .skip(2)
+        .find(|a| a.ends_with(".toml") || a.ends_with("PKGBUILD"));
     let manifest = if let Some(path) = manifest_path {
         Manifest::detect_with_path(Some(path))
     } else {
@@ -39,7 +42,9 @@ pub fn run() {
             }
         }
         None => {
-            ui::print_error("No PKGBUILD, ghostpkg.toml, or ghostforge.toml found in the current directory or specified path.");
+            ui::print_error(
+                "No PKGBUILD, ghostpkg.toml, or ghostforge.toml found in the current directory or specified path.",
+            );
         }
     }
 }

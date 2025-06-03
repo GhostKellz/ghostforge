@@ -132,12 +132,24 @@ impl Manifest {
         Some(ManifestData {
             name: value.get("name")?.as_str()?.to_string(),
             version: value.get("version")?.as_str()?.to_string(),
-            author: value.get("author").and_then(|v| v.as_str().map(|s| s.to_string())),
-            license: value.get("license").and_then(|v| v.as_str().map(|s| s.to_string())),
-            build: value.get("build").and_then(|v| v.as_str().map(|s| s.to_string())),
-            install: value.get("install").and_then(|v| v.as_str().map(|s| s.to_string())),
-            source: value.get("source").and_then(|v| v.as_str().map(|s| s.to_string())),
-            checksum: value.get("checksum").and_then(|v| v.as_str().map(|s| s.to_string())),
+            author: value
+                .get("author")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            license: value
+                .get("license")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            build: value
+                .get("build")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            install: value
+                .get("install")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            source: value
+                .get("source")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
+            checksum: value
+                .get("checksum")
+                .and_then(|v| v.as_str().map(|s| s.to_string())),
             depends: None,
             makedepends: None,
             optdepends: None,

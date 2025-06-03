@@ -50,11 +50,15 @@ pub fn run() {
                     }
                 }
             } else {
-                ui::print_error("No manifest data available (PKGBUILD linting not implemented).\nIf this is a Rust project, ensure you have a forge.toml or PKGBUILD in the root or subdirectory.");
+                ui::print_error(
+                    "No manifest data available (PKGBUILD linting not implemented).\nIf this is a Rust project, ensure you have a forge.toml or PKGBUILD in the root or subdirectory.",
+                );
             }
         }
         None => {
-            ui::print_error("No PKGBUILD or forge.toml found in the current directory or subdirectories.");
+            ui::print_error(
+                "No PKGBUILD or forge.toml found in the current directory or subdirectories.",
+            );
         }
     }
 }
