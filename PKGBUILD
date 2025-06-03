@@ -1,8 +1,6 @@
 # Maintainer: Your Name <youremail@example.com>
 
 pkgname=ghostforge
-gitname=ghostforge
-gitver=0.2.0
 pkgver=0.2.0
 pkgrel=1
 pkgdesc="A blazing-fast, modern, Rust-based replacement for makepkg and PKGBUILD workflows. Now with zero-config Rust support and Lua manifest support."
@@ -14,18 +12,12 @@ makedepends=('git')
 source=("git+https://github.com/ghostkellz/ghostforge.git#tag=v${pkgver}")
 b2sums=('SKIP')
 
-prepare() {
-  cd "$srcdir"
-  # Remove any existing ghostforge directory to avoid makepkg extraction errors
-  rm -rf ghostforge
-}
-
 build() {
-  cd "$srcdir/$gitname"
+  cd "$srcdir/$pkgname"
   cargo build --release
 }
 
 package() {
-  cd "$srcdir/$gitname"
+  cd "$srcdir/$pkgname"
   install -Dm755 target/release/ghostforge "$pkgdir/usr/bin/ghostforge"
 }

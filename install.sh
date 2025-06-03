@@ -1,20 +1,13 @@
 #!/bin/bash
 set -e
 
-# Install ghostforge using cargo
+# Install ghostforge using cargo (Arch Linux)
 if ! command -v cargo >/dev/null 2>&1; then
   echo "Cargo (Rust) is required. Please install Rust first." >&2
   exit 1
 fi
 
-cargo install --path .
+cargo build --release
+sudo install -Dm755 target/release/ghostforge /usr/bin/ghostforge
 
-# Add alias to ~/.zshrc if not present
-if ! grep -q 'alias forge=' ~/.zshrc 2>/dev/null; then
-  echo 'alias forge="ghostforge"' >> ~/.zshrc
-  echo "Added alias 'forge' to ~/.zshrc"
-else
-  echo "Alias 'forge' already present in ~/.zshrc"
-fi
-
-echo "Installation complete! Open a new terminal or run 'source ~/.zshrc' to use the 'forge' command."
+echo "ghostforge installed to /usr/bin/ghostforge"
