@@ -4,6 +4,9 @@ use std::path::Path;
 pub enum ManifestType {
     PKGBUILD,
     GhostpkgToml,
+    GhostforgeToml,
+    ForgeLua,
+    AutoRust,
 }
 
 pub struct Manifest {
@@ -29,7 +32,20 @@ pub struct ManifestData {
 
 impl Manifest {
     pub fn detect() -> Option<Manifest> {
-        if Path::new("ghostpkg.toml").exists() {
+        if Path::new("forge.lua").exists() {
+            Some(Manifest {
+                manifest_type: ManifestType::ForgeLua,
+                path: "forge.lua".to_string(),
+                data: None, // Will be handled by Lua runtime
+            })
+        } else if Path::new("ghostforge.toml").exists() {
+            let data = Manifest::parse_ghostforge_toml("ghostforge.toml");
+            Some(Manifest {
+                manifest_type: ManifestType::GhostforgeToml,
+                path: "ghostforge.toml".to_string(),
+                data,
+            })
+        } else if Path::new("ghostpkg.toml").exists() {
             let data = Manifest::parse_ghostpkg_toml("ghostpkg.toml");
             Some(Manifest {
                 manifest_type: ManifestType::GhostpkgToml,
@@ -43,16 +59,86 @@ impl Manifest {
                 path: "PKGBUILD".to_string(),
                 data,
             })
+        } else if Path::new("Cargo.toml").exists() {
+            // Auto-detect Rust project
+            Some(Manifest {
+                manifest_type: ManifestType::AutoRust,
+                path: "Cargo.toml".to_string(),
+                data: None,
+            })
         } else {
             None
         }
+    }
+
+    pub fn detect_with_path(path: Option<&str>) -> Option<Manifest> {
+        if let Some(path) = path {
+            if Path::new(path).exists() {
+                if path.ends_with("forge.lua") {
+                    return Some(Manifest {
+                        manifest_type: ManifestType::ForgeLua,
+                        path: path.to_string(),
+                        data: None, // Will be handled by Lua runtime
+                    });
+                } else if path.ends_with("ghostforge.toml") {
+                    let data = Manifest::parse_ghostforge_toml(path);
+                    return Some(Manifest {
+                        manifest_type: ManifestType::GhostforgeToml,
+                        path: path.to_string(),
+                        data,
+                    });
+                } else if path.ends_with("ghostpkg.toml") {
+                    let data = Manifest::parse_ghostpkg_toml(path);
+                    return Some(Manifest {
+                        manifest_type: ManifestType::GhostpkgToml,
+                        path: path.to_string(),
+                        data,
+                    });
+                } else if path.ends_with("PKGBUILD") {
+                    let data = Manifest::parse_pkgbuild(path);
+                    return Some(Manifest {
+                        manifest_type: ManifestType::PKGBUILD,
+                        path: path.to_string(),
+                        data,
+                    });
+                } else if path.ends_with("Cargo.toml") {
+                    return Some(Manifest {
+                        manifest_type: ManifestType::AutoRust,
+                        path: path.to_string(),
+                        data: None,
+                    });
+                }
+            }
+        }
+        Manifest::detect()
     }
 
     pub fn describe(&self) -> &'static str {
         match self.manifest_type {
             ManifestType::PKGBUILD => "PKGBUILD",
             ManifestType::GhostpkgToml => "ghostpkg.toml",
+            ManifestType::GhostforgeToml => "ghostforge.toml",
+            ManifestType::ForgeLua => "forge.lua",
+            ManifestType::AutoRust => "Rust/Cargo.toml (auto)",
         }
+    }
+
+    pub fn parse_ghostforge_toml(path: &str) -> Option<ManifestData> {
+        let content = fs::read_to_string(path).ok()?;
+        let value: toml::Value = toml::from_str(&content).ok()?;
+        Some(ManifestData {
+            name: value.get("name")?.as_str()?.to_string(),
+            version: value.get("version")?.as_str()?.to_string(),
+            author: value.get("author").and_then(|v| v.as_str().map(|s| s.to_string())),
+            license: value.get("license").and_then(|v| v.as_str().map(|s| s.to_string())),
+            build: value.get("build").and_then(|v| v.as_str().map(|s| s.to_string())),
+            install: value.get("install").and_then(|v| v.as_str().map(|s| s.to_string())),
+            source: value.get("source").and_then(|v| v.as_str().map(|s| s.to_string())),
+            checksum: value.get("checksum").and_then(|v| v.as_str().map(|s| s.to_string())),
+            depends: None,
+            makedepends: None,
+            optdepends: None,
+        })
     }
 
     pub fn parse_ghostpkg_toml(path: &str) -> Option<ManifestData> {

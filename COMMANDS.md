@@ -8,8 +8,8 @@
 
 | Command         | Description                                                   |
 | --------------- | ------------------------------------------------------------- |
-| `forge build`   | Build the current package using `PKGBUILD` or `ghostpkg.toml` (parallel build supported) |
-| `forge install` | Install the built package into the system (enforces signature verification) |
+| `forge build`   | Build the current package using `forge.lua`, `ghostforge.toml`, `ghostpkg.toml`, `PKGBUILD`, or auto-detect Rust projects (zero-config) |
+| `forge install` | Install the built package or Rust binary into the system (enforces signature verification if enabled) |
 | `forge clean`   | Remove temporary build artifacts and cache                    |
 | `forge info`    | Display metadata and parsed manifest info                     |
 
@@ -19,7 +19,7 @@
 
 | Command        | Description                                                 |
 | -------------- | ----------------------------------------------------------- |
-| `forge init`   | Generate a starter `ghostpkg.toml` file                     |
+| `forge init`   | Generate a starter `ghostforge.toml` file                   |
 | `forge lint`   | Validate the syntax and structure of a manifest or PKGBUILD (array support) |
 | `forge sign`   | Sign the built package using GPG                            |
 | `forge verify` | Verify signatures and checksums of a package                |
@@ -41,7 +41,7 @@
 
 | Command       | Description                                                |
 | ------------- | ---------------------------------------------------------- |
-| `forge test`  | Run tests included in the package or ghostpkg.toml script  |
+| `forge test`  | Run tests included in the package or manifest script       |
 | `forge audit` | Scan for insecure dependencies, license conflicts, or CVEs |
 | `forge deps`  | View and analyze build/runtime dependencies                |
 
@@ -55,3 +55,33 @@
 | `forge rebuild` | Rebuild all packages that depend on this one                |
 | `forge sandbox` | Execute builds in isolated, reproducible environments       |
 | `forge watch`   | Automatically rebuild on file changes (like `cargo-watch`)  |
+
+---
+
+## 🦀 Zero-Config Rust Project Support
+
+- If run in a directory with `Cargo.toml` and no manifest, `forge build` will:
+  - Build with `cargo build --release`
+  - Auto-detect the binary name
+  - Prompt to install to `/usr/bin/` (with `sudo` if needed)
+- No manifest needed for simple Rust projects!
+
+## 📝 Advanced: Lua Manifest (forge.lua)
+
+- For advanced users, drop a `forge.lua` in your project for full scripting control.
+- Example:
+
+```lua
+package = {
+  name = "ghostscan",
+  version = "0.1.0",
+  build = function()
+    os.execute("cargo build --release")
+  end,
+  install = function()
+    os.execute("install -Dm755 target/release/ghostscan /usr/bin/ghostscan")
+  end
+}
+```
+
+See DOCS.md for more details.

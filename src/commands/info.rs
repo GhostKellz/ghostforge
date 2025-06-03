@@ -1,11 +1,19 @@
 use crate::commands::ui;
 use crate::manifest::Manifest;
+use std::env;
 
 pub fn run() {
-    match Manifest::detect() {
+    let args: Vec<String> = env::args().collect();
+    let manifest_path = args.iter().skip(2).find(|a| a.ends_with(".toml") || a.ends_with("PKGBUILD"));
+    let manifest = if let Some(path) = manifest_path {
+        Manifest::detect_with_path(Some(path))
+    } else {
+        Manifest::detect()
+    };
+    match manifest {
         Some(manifest) => {
-            ui::print_info("Manifest info:");
             if let Some(data) = &manifest.data {
+                ui::print_info(&format!("Manifest info ({}):", manifest.describe()));
                 ui::print_info(&format!("  Name: {}", data.name));
                 ui::print_info(&format!("  Version: {}", data.version));
                 if let Some(author) = &data.author {
@@ -31,7 +39,7 @@ pub fn run() {
             }
         }
         None => {
-            ui::print_error("No PKGBUILD or ghostpkg.toml found in the current directory.");
+            ui::print_error("No PKGBUILD, ghostpkg.toml, or ghostforge.toml found in the current directory or specified path.");
         }
     }
 }
