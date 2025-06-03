@@ -14,6 +14,12 @@ makedepends=('git')
 source=("git+https://github.com/ghostkellz/ghostforge.git#tag=v${pkgver}")
 b2sums=('SKIP')
 
+prepare() {
+  cd "$srcdir"
+  # Remove any existing ghostforge directory to avoid makepkg extraction errors
+  rm -rf ghostforge
+}
+
 build() {
   cd "$srcdir/$gitname"
   cargo build --release
