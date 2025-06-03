@@ -30,7 +30,7 @@ package = {
 
 ## Performance Optimizations
 - Parallel build for subdirectories
-- Source and artifact caching (planned)
+- Source and artifact caching
 
 ## Security Enhancements
 - Enforced hash/signature verification before install
@@ -40,5 +40,7 @@ package = {
 ## User Experience & Extensibility
 - Colorized output and clear error messages
 - Plugin/hook system (planned)
+- Linting for PKGBUILD and forge.toml
+- Real-world usage and troubleshooting tips in README.md
 
 See README.md and COMMANDS.md for CLI usage.

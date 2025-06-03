@@ -14,7 +14,7 @@
 
 * 🔧 Drop-in replacement for `makepkg`
 * 📦 Backward-compatible with existing `PKGBUILD` files
-* 🛠️ `ghostpkg.toml` format for modern declarative packaging
+* 🛠️ `forge.toml` format for modern declarative packaging
 * ⚡ Written in pure Rust with zero runtime dependencies
 * 🔍 Linting and static validation of build metadata
 * 🔐 Optional signing and hash verification
@@ -50,18 +50,20 @@ pacman -U ghostforge-x.y.z.pkg.tar.zst
 
 ```bash
 ghostforge build
+ghostforge install
 ```
 
-### With ghostpkg.toml
+### With forge.toml
 
 ```bash
-ghostforge build -f ghostpkg.toml
+ghostforge build -f forge.toml
+ghostforge install -f forge.toml
 ```
 
 ### Other Commands
 
 ```bash
-ghostforge lint         # Validate a PKGBUILD or ghostpkg.toml
+ghostforge lint         # Validate a PKGBUILD or forge.toml
 ghostforge install      # Install built package to system
 ghostforge sign         # Sign a package using GPG
 ghostforge publish      # Push to a local repo or remote mirror
@@ -69,7 +71,7 @@ ghostforge publish      # Push to a local repo or remote mirror
 
 ---
 
-## 📁 Example ghostpkg.toml
+## 📁 Example forge.toml
 
 ```toml
 name = "ghostctl"
@@ -87,7 +89,7 @@ checksum = "sha256:abcd1234..."
 ## 📚 Documentation
 
 * Full CLI Reference: [`ghostforge --help`](https://github.com/ghostkellz/ghostforge/wiki/CLI-Reference)
-* [ghostpkg.toml Specification](https://github.com/ghostkellz/ghostforge/wiki/ghostpkg.toml-Spec)
+* [forge.toml Specification](https://github.com/ghostkellz/ghostforge/wiki/forge.toml-Spec)
 * Migration Guide from `makepkg`: [Read Here](https://github.com/ghostkellz/ghostforge/wiki/Migrating-from-Makepkg)
 * See [`DOCS.md`](DOCS.md) for advanced usage, hooks, and plugin system.
 

@@ -31,36 +31,55 @@ pub struct ManifestData {
 
 impl Manifest {
     pub fn detect() -> Option<Manifest> {
-        if Path::new("forge.lua").exists() {
-            Some(Manifest {
-                manifest_type: ManifestType::ForgeLua,
-                path: "forge.lua".to_string(),
-                data: None, // Will be handled by Lua runtime
-            })
-        } else if Path::new("forge.toml").exists() {
-            let data = Manifest::parse_ghostforge_toml("forge.toml");
-            Some(Manifest {
-                manifest_type: ManifestType::GhostforgeToml,
-                path: "forge.toml".to_string(),
-                data,
-            })
-        } else if Path::new("PKGBUILD").exists() {
+        // Prefer PKGBUILD in root
+        if Path::new("PKGBUILD").exists() {
             let data = Manifest::parse_pkgbuild("PKGBUILD");
-            Some(Manifest {
+            return Some(Manifest {
                 manifest_type: ManifestType::PKGBUILD,
                 path: "PKGBUILD".to_string(),
                 data,
-            })
-        } else if Path::new("Cargo.toml").exists() {
-            // Auto-detect Rust project
-            Some(Manifest {
-                manifest_type: ManifestType::AutoRust,
-                path: "Cargo.toml".to_string(),
-                data: None,
-            })
-        } else {
+            });
+        }
+        // Recursively search for forge.toml or Cargo.toml in subdirs
+        fn search_dir(dir: &Path) -> Option<Manifest> {
+            for entry in std::fs::read_dir(dir).ok()? {
+                let entry = entry.ok()?;
+                let path = entry.path();
+                if path.is_dir() {
+                    if let Some(m) = search_dir(&path) {
+                        return Some(m);
+                    }
+                } else if let Some(fname) = path.file_name().and_then(|n| n.to_str()) {
+                    if fname == "forge.toml" {
+                        let data = Manifest::parse_ghostforge_toml(path.to_str().unwrap());
+                        return Some(Manifest {
+                            manifest_type: ManifestType::GhostforgeToml,
+                            path: path.to_string_lossy().to_string(),
+                            data,
+                        });
+                    } else if fname == "Cargo.toml" {
+                        return Some(Manifest {
+                            manifest_type: ManifestType::AutoRust,
+                            path: path.to_string_lossy().to_string(),
+                            data: None,
+                        });
+                    }
+                }
+            }
             None
         }
+        if let Some(found) = search_dir(Path::new(".")) {
+            return Some(found);
+        }
+        // Fallback: forge.lua in root
+        if Path::new("forge.lua").exists() {
+            return Some(Manifest {
+                manifest_type: ManifestType::ForgeLua,
+                path: "forge.lua".to_string(),
+                data: None,
+            });
+        }
+        None
     }
 
     pub fn detect_with_path(path: Option<&str>) -> Option<Manifest> {

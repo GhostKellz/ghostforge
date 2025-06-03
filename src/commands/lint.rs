@@ -26,12 +26,35 @@ pub fn run() {
                         ui::print_error(&format!("- {}", e));
                     }
                 }
+            } else if manifest.path == "PKGBUILD" {
+                let content = std::fs::read_to_string("PKGBUILD").unwrap_or_default();
+                let mut errors = Vec::new();
+                if !content.contains("pkgname=") {
+                    errors.push("Missing 'pkgname' field");
+                }
+                if !content.contains("pkgver=") {
+                    errors.push("Missing 'pkgver' field");
+                }
+                if !content.contains("build()") {
+                    errors.push("Missing build() function");
+                }
+                if !content.contains("package()") {
+                    errors.push("Missing package() function");
+                }
+                if errors.is_empty() {
+                    ui::print_success("PKGBUILD is valid.");
+                } else {
+                    ui::print_error("PKGBUILD has errors:");
+                    for e in errors {
+                        ui::print_error(&format!("- {}", e));
+                    }
+                }
             } else {
-                ui::print_error("No manifest data available (PKGBUILD linting not implemented).");
+                ui::print_error("No manifest data available (PKGBUILD linting not implemented).\nIf this is a Rust project, ensure you have a forge.toml or PKGBUILD in the root or subdirectory.");
             }
         }
         None => {
-            ui::print_error("No PKGBUILD or ghostpkg.toml found in the current directory.");
+            ui::print_error("No PKGBUILD or forge.toml found in the current directory or subdirectories.");
         }
     }
 }

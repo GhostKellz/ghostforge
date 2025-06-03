@@ -8,7 +8,7 @@
 
 | Command         | Description                                                   |
 | --------------- | ------------------------------------------------------------- |
-| `forge build`   | Build the current package using `forge.lua`, `ghostforge.toml`, `ghostpkg.toml`, `PKGBUILD`, or auto-detect Rust projects (zero-config) |
+| `forge build`   | Build the current package using `forge.lua`, `forge.toml`, `PKGBUILD`, or auto-detect Rust projects (zero-config) |
 | `forge install` | Install the built package or Rust binary into the system (enforces signature verification if enabled) |
 | `forge clean`   | Remove temporary build artifacts and cache                    |
 | `forge info`    | Display metadata and parsed manifest info                     |
@@ -19,7 +19,7 @@
 
 | Command        | Description                                                 |
 | -------------- | ----------------------------------------------------------- |
-| `forge init`   | Generate a starter `ghostforge.toml` file                   |
+| `forge init`   | Generate a starter `forge.toml` file                        |
 | `forge lint`   | Validate the syntax and structure of a manifest or PKGBUILD (array support) |
 | `forge sign`   | Sign the built package using GPG                            |
 | `forge verify` | Verify signatures and checksums of a package                |
