@@ -3,7 +3,6 @@ use std::path::Path;
 
 pub enum ManifestType {
     PKGBUILD,
-    GhostpkgToml,
     GhostforgeToml,
     ForgeLua,
     AutoRust,
@@ -38,18 +37,11 @@ impl Manifest {
                 path: "forge.lua".to_string(),
                 data: None, // Will be handled by Lua runtime
             })
-        } else if Path::new("ghostforge.toml").exists() {
-            let data = Manifest::parse_ghostforge_toml("ghostforge.toml");
+        } else if Path::new("forge.toml").exists() {
+            let data = Manifest::parse_ghostforge_toml("forge.toml");
             Some(Manifest {
                 manifest_type: ManifestType::GhostforgeToml,
-                path: "ghostforge.toml".to_string(),
-                data,
-            })
-        } else if Path::new("ghostpkg.toml").exists() {
-            let data = Manifest::parse_ghostpkg_toml("ghostpkg.toml");
-            Some(Manifest {
-                manifest_type: ManifestType::GhostpkgToml,
-                path: "ghostpkg.toml".to_string(),
+                path: "forge.toml".to_string(),
                 data,
             })
         } else if Path::new("PKGBUILD").exists() {
@@ -80,17 +72,10 @@ impl Manifest {
                         path: path.to_string(),
                         data: None, // Will be handled by Lua runtime
                     });
-                } else if path.ends_with("ghostforge.toml") {
+                } else if path.ends_with("forge.toml") {
                     let data = Manifest::parse_ghostforge_toml(path);
                     return Some(Manifest {
                         manifest_type: ManifestType::GhostforgeToml,
-                        path: path.to_string(),
-                        data,
-                    });
-                } else if path.ends_with("ghostpkg.toml") {
-                    let data = Manifest::parse_ghostpkg_toml(path);
-                    return Some(Manifest {
-                        manifest_type: ManifestType::GhostpkgToml,
                         path: path.to_string(),
                         data,
                     });
@@ -116,8 +101,7 @@ impl Manifest {
     pub fn describe(&self) -> &'static str {
         match self.manifest_type {
             ManifestType::PKGBUILD => "PKGBUILD",
-            ManifestType::GhostpkgToml => "ghostpkg.toml",
-            ManifestType::GhostforgeToml => "ghostforge.toml",
+            ManifestType::GhostforgeToml => "forge.toml",
             ManifestType::ForgeLua => "forge.lua",
             ManifestType::AutoRust => "Rust/Cargo.toml (auto)",
         }
@@ -135,36 +119,6 @@ impl Manifest {
             install: value.get("install").and_then(|v| v.as_str().map(|s| s.to_string())),
             source: value.get("source").and_then(|v| v.as_str().map(|s| s.to_string())),
             checksum: value.get("checksum").and_then(|v| v.as_str().map(|s| s.to_string())),
-            depends: None,
-            makedepends: None,
-            optdepends: None,
-        })
-    }
-
-    pub fn parse_ghostpkg_toml(path: &str) -> Option<ManifestData> {
-        let content = fs::read_to_string(path).ok()?;
-        let value: toml::Value = toml::from_str(&content).ok()?;
-        Some(ManifestData {
-            name: value.get("name")?.as_str()?.to_string(),
-            version: value.get("version")?.as_str()?.to_string(),
-            author: value
-                .get("author")
-                .and_then(|v| v.as_str().map(|s| s.to_string())),
-            license: value
-                .get("license")
-                .and_then(|v| v.as_str().map(|s| s.to_string())),
-            build: value
-                .get("build")
-                .and_then(|v| v.as_str().map(|s| s.to_string())),
-            install: value
-                .get("install")
-                .and_then(|v| v.as_str().map(|s| s.to_string())),
-            source: value
-                .get("source")
-                .and_then(|v| v.as_str().map(|s| s.to_string())),
-            checksum: value
-                .get("checksum")
-                .and_then(|v| v.as_str().map(|s| s.to_string())),
             depends: None,
             makedepends: None,
             optdepends: None,

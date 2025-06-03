@@ -2,9 +2,31 @@ use crate::commands::ui;
 use crate::manifest::Manifest;
 use std::env;
 use std::fs;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use atty;
-//use std::collections::HashMap;
+
+// Recursively search for a manifest file in the current directory and subdirectories
+fn find_manifest() -> Option<PathBuf> {
+    let manifest_names = ["forge.lua", "forge.toml", "PKGBUILD", "Cargo.toml"];
+    fn search_dir(dir: &Path, names: &[&str]) -> Option<PathBuf> {
+        for entry in fs::read_dir(dir).ok()? {
+            let entry = entry.ok()?;
+            let path = entry.path();
+            if path.is_dir() {
+                if let Some(found) = search_dir(&path, names) {
+                    return Some(found);
+                }
+            } else if let Some(fname) = path.file_name().and_then(|n| n.to_str()) {
+                if names.contains(&fname) {
+                    return Some(path);
+                }
+            }
+        }
+        None
+    }
+    search_dir(Path::new("."), &manifest_names)
+}
 
 pub fn run() {
     let args: Vec<String> = env::args().collect();
@@ -12,7 +34,8 @@ pub fn run() {
     let manifest = if let Some(path) = manifest_path {
         Manifest::detect_with_path(Some(path))
     } else {
-        Manifest::detect()
+        // Try current dir, then recursively search
+        Manifest::detect().or_else(|| find_manifest().and_then(|p| Manifest::detect_with_path(p.to_str())))
     };
 
     // Source/artifact caching: use .forge-cache/ for built binaries and sources
@@ -104,8 +127,11 @@ pub fn run() {
                         Err(e) => ui::print_error(&format!("Failed to run cargo build: {}", e)),
                     }
                 }
-                crate::manifest::ManifestType::GhostforgeToml | crate::manifest::ManifestType::GhostpkgToml => {
+                crate::manifest::ManifestType::GhostforgeToml => {
                     if let Some(data) = &manifest.data {
+                        if data.build.is_none() {
+                            ui::print_error("Lint: No build command found in manifest.");
+                        }
                         if let Some(build_cmd) = &data.build {
                             ui::print_info(&format!("Running build command: {}", build_cmd));
                             let status = if cfg!(target_os = "windows") {
@@ -118,8 +144,6 @@ pub fn run() {
                                 Ok(s) => ui::print_error(&format!("Build failed with status: {}", s)),
                                 Err(e) => ui::print_error(&format!("Failed to run build command: {}", e)),
                             }
-                        } else {
-                            ui::print_error("No build command found in manifest.");
                         }
                     }
                 }
@@ -138,7 +162,7 @@ pub fn run() {
             }
         }
         None => {
-            ui::print_error("No forge.lua, ghostforge.toml, ghostpkg.toml, PKGBUILD, or Cargo.toml found in the current directory or specified path. Try 'ghostforge init' to scaffold a manifest.");
+            ui::print_error("No forge.lua, forge.toml, PKGBUILD, or Cargo.toml found in the current directory or any subdirectory. Try 'ghostforge init' to scaffold a manifest.");
         }
     }
 }

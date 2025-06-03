@@ -15,7 +15,7 @@ pub fn run() {
         Some(manifest) => {
             ui::print_info(&format!("Detected manifest: {} (at {})", manifest.describe(), manifest.path));
             match manifest.manifest_type {
-                crate::manifest::ManifestType::GhostforgeToml | crate::manifest::ManifestType::GhostpkgToml => {
+                crate::manifest::ManifestType::GhostforgeToml => {
                     if let Some(data) = &manifest.data {
                         if let Some(install_cmd) = &data.install {
                             ui::print_info(&format!("Running install command: {}", install_cmd));
@@ -47,7 +47,7 @@ pub fn run() {
                     }
                 }
                 crate::manifest::ManifestType::ForgeLua | crate::manifest::ManifestType::AutoRust => {
-                    ui::print_info("Install is not supported for this manifest type. Use a TOML or PKGBUILD manifest for install logic.");
+                    ui::print_info("Install is not supported for this manifest type. Use a forge.toml or PKGBUILD manifest for install logic.");
                 }
             }
         }
