@@ -2,8 +2,8 @@
 
 pkgname=ghostforge
 gitname=ghostforge
-gitver=0.1.0
-pkgver=0.1.0
+gitver=0.2.0
+pkgver=0.2.0
 pkgrel=1
 pkgdesc="A blazing-fast, modern, Rust-based replacement for makepkg and PKGBUILD workflows. Now with zero-config Rust support and Lua manifest support."
 arch=('x86_64')
@@ -16,7 +16,7 @@ b2sums=('SKIP')
 
 build() {
   cd "$srcdir/$gitname"
-  cargo build --release --locked
+  cargo build --release
 }
 
 package() {
