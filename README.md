@@ -1,6 +1,6 @@
 # 👻 GhostForge
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/ghostkellz/ghostforge/ci.yml?branch=main)
+![Build Status](https://img.shields.io/github/actions/workflow/status/ghostkellz/ghostforge/main.yml?branch=main)
 ![License](https://img.shields.io/github/license/ghostkellz/ghostforge)
 ![Crates.io](https://img.shields.io/crates/v/ghostforge)
 ![Rust Version](https://img.shields.io/badge/rust-1.78+-blueviolet)
